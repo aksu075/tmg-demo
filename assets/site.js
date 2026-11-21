@@ -24,45 +24,24 @@
     });
   }
 
-  // Eğitimler açılır menüsü (klavye ve dokunmatik)
-  document.querySelectorAll('.dd > button').forEach(function (btn) {
+  // Çekmecede Eğitimler alt menüsü: kapalı gelir, okla açılır
+  document.querySelectorAll('.dd-tog').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      var dd = btn.parentElement;
-      var open = dd.classList.toggle('open');
+      var open = btn.parentElement.classList.toggle('open');
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');
     });
   });
-  document.addEventListener('click', function (e) {
-    document.querySelectorAll('.dd.open').forEach(function (dd) {
-      if (!dd.contains(e.target)) dd.classList.remove('open');
-    });
-  });
 
-  // SSS arama
-  var search = document.getElementById('sssAra');
-  if (search) {
-    var empty = document.getElementById('sssBos');
-    search.addEventListener('input', function () {
-      var q = search.value.toLocaleLowerCase('tr').trim();
-      var shown = 0;
-      document.querySelectorAll('.faq details').forEach(function (d) {
-        var hit = !q || d.textContent.toLocaleLowerCase('tr').indexOf(q) !== -1;
-        d.hidden = !hit;
-        if (hit) shown++;
-      });
-      document.querySelectorAll('.faq section').forEach(function (s) {
-        s.hidden = !s.querySelector('details:not([hidden])');
-      });
-      if (empty) empty.hidden = shown > 0;
-    });
-  }
+  // Telefonda alt çubuk: sayfa biraz kaydırıldıktan sonra görünür
+  function kaydir() { document.body.classList.toggle('kaydi', window.scrollY > 420); }
+  window.addEventListener('scroll', kaydir, { passive: true });
+  kaydir();
 
   // Telefonda tablolar kart olarak gösterilir: her hücre kendi sütun adını taşır
-  document.querySelectorAll('table.tbl').forEach(function (tbl) {
+  document.querySelectorAll('table.tbl:not(.kisa)').forEach(function (tbl) {
     var heads = Array.prototype.map.call(tbl.querySelectorAll('thead th'), function (th) {
       return th.textContent.trim();
     });
-    // Bir sütunda tek bir uzun hücre varsa o sütunun tamamı alt alta dizilir
     var uzun = [];
     tbl.querySelectorAll('tbody tr').forEach(function (tr) {
       var col = 0;
@@ -96,8 +75,42 @@
     }
   });
 
-  // Ön kayıt formu: sunucuya veri göndermez, mesajı WhatsApp'ta açar
-  var form = document.getElementById('onKayit');
+  // Harita yalnızca ziyaretçi isteyince yüklenir (Google'a istek o zaman gider)
+  document.querySelectorAll('.map-box [data-harita]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var box = btn.closest('.map-box');
+      var f = document.createElement('iframe');
+      f.src = box.dataset.src;
+      f.title = 'Harita konumu';
+      f.loading = 'lazy';
+      f.referrerPolicy = 'no-referrer';
+      box.textContent = '';
+      box.classList.add('acik');
+      box.appendChild(f);
+    });
+  });
+
+  // SSS arama
+  var search = document.getElementById('sssAra');
+  if (search) {
+    var empty = document.getElementById('sssBos');
+    search.addEventListener('input', function () {
+      var q = search.value.toLocaleLowerCase('tr').trim();
+      var shown = 0;
+      document.querySelectorAll('.faq details').forEach(function (d) {
+        var hit = !q || d.textContent.toLocaleLowerCase('tr').indexOf(q) !== -1;
+        d.hidden = !hit;
+        if (hit) shown++;
+      });
+      document.querySelectorAll('.faq section').forEach(function (s) {
+        s.hidden = !s.querySelector('details:not([hidden])');
+      });
+      if (empty) empty.hidden = shown > 0;
+    });
+  }
+
+  // Bilgi talep formu: sunucuya veri göndermez; mesajı WhatsApp'ta veya e-posta uygulamasında açar
+  var form = document.getElementById('bilgiFormu');
   if (form) {
     form.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -110,8 +123,13 @@
         'İlgilendiğim eğitim: ' + f.egitim.value
       ];
       if (f.mesaj.value.trim()) lines.push('Mesaj: ' + f.mesaj.value.trim());
-      var url = 'https://wa.me/' + form.dataset.wa + '?text=' + encodeURIComponent(lines.join('\n'));
-      window.open(url, '_blank', 'noopener');
+      var metin = encodeURIComponent(lines.join('\n'));
+      var kanal = e.submitter && e.submitter.value;
+      if (kanal === 'eposta') {
+        window.location.href = 'mailto:' + form.dataset.eposta + '?subject=' + encodeURIComponent('Bilgi talebi') + '&body=' + metin;
+      } else {
+        window.open('https://wa.me/' + form.dataset.wa + '?text=' + metin, '_blank', 'noopener');
+      }
     });
   }
 })();
