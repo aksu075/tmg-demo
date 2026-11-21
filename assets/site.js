@@ -57,6 +57,36 @@
     });
   }
 
+  // Telefonda tablolar kart olarak gösterilir: her hücre kendi sütun adını taşır
+  document.querySelectorAll('table.tbl').forEach(function (tbl) {
+    var heads = Array.prototype.map.call(tbl.querySelectorAll('thead th'), function (th) {
+      return th.textContent.trim();
+    });
+    // Bir sütunda tek bir uzun hücre varsa o sütunun tamamı alt alta dizilir
+    var uzun = [];
+    tbl.querySelectorAll('tbody tr').forEach(function (tr) {
+      var col = 0;
+      Array.prototype.forEach.call(tr.children, function (cell) {
+        var span = cell.colSpan || 1;
+        if (span === 1 && cell.textContent.trim().length > 30) uzun[col] = true;
+        col += span;
+      });
+    });
+    tbl.querySelectorAll('tbody tr').forEach(function (tr) {
+      var col = 0;
+      Array.prototype.forEach.call(tr.children, function (cell, i) {
+        var span = cell.colSpan || 1;
+        if (i === 0 && cell.tagName === 'TH') {
+          cell.classList.add('baslik');
+        } else if (heads[col]) {
+          cell.setAttribute('data-label', span > 1 ? heads.slice(col, col + span).join(' / ') : heads[col]);
+          if (uzun[col]) cell.classList.add('uzun');
+        }
+        col += span;
+      });
+    });
+  });
+
   // Ücretlerin geçerlilik tarihi geçtiyse uyarıya dön
   document.querySelectorAll('.gecerli[data-son]').forEach(function (p) {
     var son = new Date(p.dataset.son + 'T23:59:59');
