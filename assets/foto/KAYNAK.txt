@@ -1,0 +1,6 @@
+Bu klasördeki fotoğraflar demo için konmuş ÖRNEK görsellerdir; kurumun kendi fotoğraflarıyla değiştirilecektir.
+Kaynak: Unsplash (ücretsiz lisans, https://unsplash.com/license)
+
+ornek-derslik.jpg  https://unsplash.com/photos/teacher-lecturing-students-in-a-classroom-setting-vBg0dxwfIYM
+ornek-gorev.jpg    https://unsplash.com/photos/security-guard-standing-on-the-gray-floor-8FxJi5wuwKc
+ornek-izleme.jpg   https://unsplash.com/photos/man-monitoring-security-cameras-at-desk-ELqLNB26-18
