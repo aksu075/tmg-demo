@@ -10,6 +10,7 @@
       var open = nav.classList.toggle('open');
       burger.setAttribute('aria-expanded', open ? 'true' : 'false');
       burger.textContent = open ? 'Kapat' : 'Menü';
+      if (open) nav.scrollIntoView({ block: 'nearest' });
     });
   }
 
