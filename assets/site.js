@@ -2,15 +2,25 @@
 (function () {
   'use strict';
 
-  // Mobil menü
+  // Mobil menü: sağdan açılan çekmece
   var burger = document.querySelector('.burger');
   var nav = document.getElementById('nav');
+  var overlay = document.getElementById('overlay');
+  function menu(open) {
+    nav.classList.toggle('open', open);
+    document.body.classList.toggle('menu-acik', open);
+    if (overlay) overlay.hidden = !open;
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    burger.setAttribute('aria-label', open ? 'Menüyü kapat' : 'Menüyü aç');
+    if (open) { var k = nav.querySelector('.drawer-close'); if (k) k.focus(); } else { burger.focus(); }
+  }
   if (burger && nav) {
-    burger.addEventListener('click', function () {
-      var open = nav.classList.toggle('open');
-      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
-      burger.textContent = open ? 'Kapat' : 'Menü';
-      if (open) nav.scrollIntoView({ block: 'nearest' });
+    burger.addEventListener('click', function () { menu(!nav.classList.contains('open')); });
+    if (overlay) overlay.addEventListener('click', function () { menu(false); });
+    var kapat = nav.querySelector('.drawer-close');
+    if (kapat) kapat.addEventListener('click', function () { menu(false); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && nav.classList.contains('open')) menu(false);
     });
   }
 
