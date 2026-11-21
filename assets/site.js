@@ -6,12 +6,16 @@
   var burger = document.querySelector('.burger');
   var nav = document.getElementById('nav');
   var overlay = document.getElementById('overlay');
-  function menu(open) {
+  // Çekmece açıkken arkada kalan bölümler: klavye ve ekran okuyucu bunlara girmesin
+  var arka = document.querySelectorAll('.demo-flag, .hdr, main, .ftr, .mbar, .wa-float');
+  function menu(open, odakla) {
     nav.classList.toggle('open', open);
     document.body.classList.toggle('menu-acik', open);
     if (overlay) overlay.hidden = !open;
+    arka.forEach(function (el) { el.inert = open; });
     burger.setAttribute('aria-expanded', open ? 'true' : 'false');
     burger.setAttribute('aria-label', open ? 'Menüyü kapat' : 'Menüyü aç');
+    if (odakla === false) return;
     if (open) { var k = nav.querySelector('.drawer-close'); if (k) k.focus(); } else { burger.focus(); }
   }
   if (burger && nav) {
@@ -22,13 +26,18 @@
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && nav.classList.contains('open')) menu(false);
     });
+    // Ekran genişleyip masaüstü düzenine geçilirse (tablet döndürme) açık çekmece ve koyu örtü kalmasın
+    var genis = window.matchMedia('(min-width: 901px)');
+    var genisledi = function () { if (genis.matches && nav.classList.contains('open')) menu(false, false); };
+    if (genis.addEventListener) genis.addEventListener('change', genisledi); else if (genis.addListener) genis.addListener(genisledi);
   }
 
-  // Çekmecede Eğitimler alt menüsü: kapalı gelir, okla açılır
+  // Çekmecede Eğitimler alt menüsü: okla açılır; bir eğitim sayfasındayken açık gelir
   document.querySelectorAll('.dd-tog').forEach(function (btn) {
     btn.addEventListener('click', function () {
       var open = btn.parentElement.classList.toggle('open');
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.setAttribute('aria-label', 'Eğitimler alt menüsünü ' + (open ? 'kapat' : 'aç'));
     });
   });
 
@@ -94,11 +103,16 @@
   var search = document.getElementById('sssAra');
   if (search) {
     var empty = document.getElementById('sssBos');
+    // Türkçe harfleri sadeleştir: "harc" da "harç" da hem "harçlar"ı hem "harcı"yı bulsun, "saglik" "sağlık"ı bulsun
+    var harf = { 'ç': 'c', 'ğ': 'g', 'ı': 'i', 'ö': 'o', 'ş': 's', 'ü': 'u', 'â': 'a', 'î': 'i', 'û': 'u' };
+    var sade = function (s) {
+      return s.toLocaleLowerCase('tr').replace(/[çğıöşüâîû]/g, function (c) { return harf[c]; });
+    };
     search.addEventListener('input', function () {
-      var q = search.value.toLocaleLowerCase('tr').trim();
+      var q = sade(search.value).trim();
       var shown = 0;
       document.querySelectorAll('.faq details').forEach(function (d) {
-        var hit = !q || d.textContent.toLocaleLowerCase('tr').indexOf(q) !== -1;
+        var hit = !q || sade(d.textContent).indexOf(q) !== -1;
         d.hidden = !hit;
         if (hit) shown++;
       });
