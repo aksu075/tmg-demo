@@ -236,6 +236,12 @@ table.tbl { width: 100%; border-collapse: collapse; min-width: 520px; }
 .ph { border: 2px dashed #b9b2a2; border-radius: var(--radius); background: repeating-linear-gradient(45deg, #efece4, #efece4 12px, #e8e4da 12px, #e8e4da 24px); min-height: 190px; display: grid; place-items: center; text-align: center; color: #6b6557; font-size: .9rem; padding: 16px; }
 .ph b { display: block; color: #4b463c; }
 
+.gecerli { margin: 14px 0 0; font-size: .92rem; color: var(--muted); }
+.gecerli .g-eski { color: #a3352b; font-weight: 600; }
+.maliyet { margin: 16px 0 4px; padding-top: 14px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; font-size: .93rem; }
+.maliyet dt { color: var(--muted); }
+.maliyet dd { margin: 0; font-weight: 700; text-align: right; white-space: nowrap; }
+
 .cta { background: linear-gradient(135deg, var(--amber) 0%, #ffc44d 100%); color: var(--ink); padding: 46px 0; }
 .cta .wrap { display: flex; justify-content: space-between; align-items: center; gap: 28px; flex-wrap: wrap; }
 .cta h2 { margin: 0 0 6px; }

@@ -46,6 +46,15 @@
     });
   }
 
+  // Ücretlerin geçerlilik tarihi geçtiyse uyarıya dön
+  document.querySelectorAll('.gecerli[data-son]').forEach(function (p) {
+    var son = new Date(p.dataset.son + 'T23:59:59');
+    if (new Date() > son) {
+      p.querySelector('.g-ok').hidden = true;
+      p.querySelector('.g-eski').hidden = false;
+    }
+  });
+
   // Ön kayıt formu: sunucuya veri göndermez, mesajı WhatsApp'ta açar
   var form = document.getElementById('onKayit');
   if (form) {
