@@ -7,7 +7,7 @@
   var nav = document.getElementById('nav');
   var overlay = document.getElementById('overlay');
   // Çekmece açıkken arkada kalan bölümler: klavye ve ekran okuyucu bunlara girmesin
-  var arka = document.querySelectorAll('.demo-flag, .hdr, main, .ftr, .mbar, .wa-float');
+  var arka = document.querySelectorAll('.demo-flag, .hdr, main, .ftr, .mbar');
   function menu(open, odakla) {
     nav.classList.toggle('open', open);
     document.body.classList.toggle('menu-acik', open);
@@ -123,7 +123,7 @@
     });
   }
 
-  // Bilgi talep formu: sunucuya veri göndermez; mesajı WhatsApp'ta veya e-posta uygulamasında açar
+  // Bilgi talep formu: sunucuya veri göndermez; mesajı ziyaretçinin e-posta uygulamasında açar
   var form = document.getElementById('bilgiFormu');
   if (form) {
     form.addEventListener('submit', function (e) {
@@ -138,12 +138,7 @@
       ];
       if (f.mesaj.value.trim()) lines.push('Mesaj: ' + f.mesaj.value.trim());
       var metin = encodeURIComponent(lines.join('\n'));
-      var kanal = e.submitter && e.submitter.value;
-      if (kanal === 'eposta') {
-        window.location.href = 'mailto:' + form.dataset.eposta + '?subject=' + encodeURIComponent('Bilgi talebi') + '&body=' + metin;
-      } else {
-        window.open('https://wa.me/' + form.dataset.wa + '?text=' + metin, '_blank', 'noopener');
-      }
+      window.location.href = 'mailto:' + form.dataset.eposta + '?subject=' + encodeURIComponent('Bilgi talebi') + '&body=' + metin;
     });
   }
 })();
