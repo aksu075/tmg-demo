@@ -164,10 +164,9 @@
         'Merhaba, web sitenizden yazıyorum.',
         'Şube: ' + o.textContent,
         'Ad Soyad: ' + f.ad.value.trim(),
-        'Telefon: ' + f.tel.value.trim(),
-        'İlgilendiğim eğitim: ' + f.egitim.value
+        'Telefon: ' + f.tel.value.trim()
       ];
-      if (f.mesaj.value.trim()) lines.push('Mesaj: ' + f.mesaj.value.trim());
+      if (f.mesaj.value.trim()) lines.push('Sorum: ' + f.mesaj.value.trim());
       var metin = encodeURIComponent(lines.join('\n'));
       var kanal = e.submitter && e.submitter.value;
       subeYaz(o.value);

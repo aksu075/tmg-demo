@@ -223,7 +223,7 @@ body.kaydi .nav > a.nav-tel { opacity: 1; visibility: visible; }
 .check li:last-child { border-bottom: 0; }
 .check li::before { content: ""; position: absolute; left: 0; top: 12px; width: 20px; height: 20px; border-radius: 50%; background: var(--ok) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center / 13px no-repeat; }
 .check.doc li::before { background: var(--navy); width: 8px; height: 8px; left: 6px; top: 19px; }
-.check.no li::before { background: #a3352b url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round'%3E%3Cpath d='M7 7l10 10M17 7L7 17'/%3E%3C/svg%3E") center / 12px no-repeat; }
+.check.no li::before { background: #556173 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round'%3E%3Cpath d='M7 7l10 10M17 7L7 17'/%3E%3C/svg%3E") center / 12px no-repeat; }
 
 .note { background: var(--accent-soft); border-left: 4px solid var(--accent); max-width: 46em; border-radius: 0 12px 12px 0; padding: 16px 20px; margin: 24px 0; }
 .note p:last-child { margin: 0; }
@@ -518,3 +518,14 @@ html[data-sube="izmit"] .ara-cift a[data-s="gebze"], html[data-sube="gebze"] .ar
 @media (max-width: 340px) {
   .mbar .i { display: none; }
 }
+
+/* Yapışkan menüde iki şubenin telefonu: yalnız geniş ekranda, sayfa kaydırılınca */
+.nav-tels { display: none; }
+@media (min-width: 1200px) {
+  .nav-tels { display: flex; align-items: center; gap: 22px; margin-left: auto; padding-left: 16px; opacity: 0; visibility: hidden; transition: opacity .2s, visibility .2s; }
+  body.kaydi .nav-tels { opacity: 1; visibility: visible; }
+  .nav-tels a { color: #fff; font-weight: 800; font-size: .95rem; text-decoration: none; white-space: nowrap; padding: 15px 0; }
+  .nav-tels a:hover { text-decoration: underline; }
+  .nav-tels small { font-weight: 600; font-size: .8rem; color: var(--on-dark); margin-right: 4px; }
+}
+.form .hint i { color: var(--accent-d); font-style: normal; }
