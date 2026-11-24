@@ -41,19 +41,27 @@
     });
   });
 
-  // Şube seçimi: ziyaretçi bir şubenin sayfasını açınca ya da telefonuna dokununca o şube hatırlanır.
-  // Telefondaki alt çubuk ve iletişim formu seçili şubeye göre düzenlenir.
+  // Şube seçimi: ziyaretçi bir şubeyi arayınca ya da WhatsApp'tan yazınca o şube hatırlanır.
+  // Şube sayfası yalnızca o sayfada kendi şubesini gösterir; sayfayı açmak seçim sayılmaz.
   var kok = document.documentElement;
   function subeOku() { try { return localStorage.getItem('tmg-sube'); } catch (e) { return null; } }
+  function subeGoster(kod) { kok.setAttribute('data-sube', kod); }
   function subeYaz(kod) {
-    kok.setAttribute('data-sube', kod);
+    subeGoster(kod);
     try { localStorage.setItem('tmg-sube', kod); } catch (e) { /* gizli sekme: yalnız bu sayfada geçerli */ }
   }
   var sube = document.body.dataset.sube || subeOku();
-  if (sube) subeYaz(sube);
+  if (sube) subeGoster(sube);
   document.addEventListener('click', function (e) {
     var a = e.target.closest && e.target.closest('[data-sube-sec]');
-    if (a) subeYaz(a.dataset.subeSec);
+    if (!a) return;
+    var href = a.getAttribute('href') || '';
+    if (a.classList.contains('gec')) {          // alt çubukta "öbür şubeye geç": sayfa değişmeden çubuk değişir
+      e.preventDefault();
+      subeYaz(a.dataset.subeSec);
+    } else if (href.indexOf('tel:') === 0 || href.indexOf('wa.me') !== -1) {
+      subeYaz(a.dataset.subeSec);
+    }
   });
 
   // Telefonda alt çubuk: sayfa biraz kaydırıldıktan sonra görünür
