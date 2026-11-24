@@ -37,8 +37,23 @@
     btn.addEventListener('click', function () {
       var open = btn.parentElement.classList.toggle('open');
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-      btn.setAttribute('aria-label', 'Eğitimler alt menüsünü ' + (open ? 'kapat' : 'aç'));
+      btn.setAttribute('aria-label', (btn.dataset.ad || 'Alt') + ' alt menüsünü ' + (open ? 'kapat' : 'aç'));
     });
+  });
+
+  // Şube seçimi: ziyaretçi bir şubenin sayfasını açınca ya da telefonuna dokununca o şube hatırlanır.
+  // Telefondaki alt çubuk ve iletişim formu seçili şubeye göre düzenlenir.
+  var kok = document.documentElement;
+  function subeOku() { try { return localStorage.getItem('tmg-sube'); } catch (e) { return null; } }
+  function subeYaz(kod) {
+    kok.setAttribute('data-sube', kod);
+    try { localStorage.setItem('tmg-sube', kod); } catch (e) { /* gizli sekme: yalnız bu sayfada geçerli */ }
+  }
+  var sube = document.body.dataset.sube || subeOku();
+  if (sube) subeYaz(sube);
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('[data-sube-sec]');
+    if (a) subeYaz(a.dataset.subeSec);
   });
 
   // Telefonda alt çubuk: sayfa biraz kaydırıldıktan sonra görünür
@@ -123,22 +138,36 @@
     });
   }
 
-  // Bilgi talep formu: sunucuya veri göndermez; mesajı ziyaretçinin e-posta uygulamasında açar
+  // Bilgi talep formu: sunucuya veri göndermez; mesajı ziyaretçinin e-posta uygulamasında veya (şubenin WhatsApp'ı varsa) WhatsApp'ta açar
   var form = document.getElementById('bilgiFormu');
   if (form) {
+    var f = form.elements;
+    var waBtn = form.querySelector('button[value="whatsapp"]');
+    var secili = function () { return f.sube.options[f.sube.selectedIndex]; };
+    var subeDegisti = function () { if (waBtn) waBtn.hidden = !secili().dataset.wa; };
+    if (sube) f.sube.value = sube;
+    f.sube.addEventListener('change', subeDegisti);
+    subeDegisti();
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       if (!form.reportValidity()) return;
-      var f = form.elements;
+      var o = secili();
       var lines = [
         'Merhaba, web sitenizden yazıyorum.',
+        'Şube: ' + o.textContent,
         'Ad Soyad: ' + f.ad.value.trim(),
         'Telefon: ' + f.tel.value.trim(),
         'İlgilendiğim eğitim: ' + f.egitim.value
       ];
       if (f.mesaj.value.trim()) lines.push('Mesaj: ' + f.mesaj.value.trim());
       var metin = encodeURIComponent(lines.join('\n'));
-      window.location.href = 'mailto:' + form.dataset.eposta + '?subject=' + encodeURIComponent('Bilgi talebi') + '&body=' + metin;
+      var kanal = e.submitter && e.submitter.value;
+      subeYaz(o.value);
+      if (kanal === 'whatsapp' && o.dataset.wa) {
+        window.open('https://wa.me/' + o.dataset.wa + '?text=' + metin, '_blank', 'noopener');
+      } else {
+        window.location.href = 'mailto:' + o.dataset.eposta + '?subject=' + encodeURIComponent('Bilgi talebi') + '&body=' + metin;
+      }
     });
   }
 })();
