@@ -177,4 +177,97 @@
       }
     });
   }
+
+  // Sınav takvimi: geçmiş sınavları soluklaştır, sıradakini işaretle
+  var satirlar = document.querySelectorAll('.takvim tr[data-tarih]');
+  if (satirlar.length) {
+    var simdi = new Date();
+    var bulundu = false;
+    satirlar.forEach(function (tr) {
+      var gun = new Date(tr.dataset.tarih + 'T23:59:59');
+      var d = tr.querySelector('.durum');
+      if (gun < simdi) {
+        tr.classList.add('gecti');
+        if (d) d.textContent = 'Yapıldı';
+      } else if (!bulundu) {
+        bulundu = true;
+        tr.classList.add('siradaki');
+        if (d) d.textContent = 'Sıradaki sınav';
+        var kutu = document.getElementById('siradaki');
+        if (kutu) {
+          var kalan = Math.ceil((gun - simdi) / 86400000);
+          kutu.textContent = 'Bir sonraki sınav: ' + tr.dataset.ad + (kalan > 1 ? ' (' + kalan + ' gün kaldı).' : kalan === 1 ? ' (yarın).' : ' (bugün).');
+          kutu.hidden = false;
+        }
+      }
+    });
+    if (!bulundu) {
+      var k2 = document.getElementById('siradaki');
+      if (k2) { k2.textContent = 'Bu yılın sınavları tamamlandı. Yeni yılın takvimi açıklanınca bu sayfa güncellenecek; tarih için şubenizi arayın.'; k2.hidden = false; }
+    }
+  }
+
+  // Puan hesaplama: doğru sayısından puanı ve geçme durumunu bulur (hiçbir veri gönderilmez)
+  var pf = document.getElementById('puanFormu');
+  if (pf) {
+    var pe = pf.elements;
+    var ps = document.getElementById('puanSonuc');
+    var tur = function () { return pf.querySelector('input[name="tur"]:checked').value; };
+    var alanlar = function () {
+      var t = tur();
+      pf.querySelectorAll('[data-tur]').forEach(function (l) { l.hidden = l.dataset.tur.split(' ').indexOf(t) === -1; });
+      ps.hidden = true;
+    };
+    pf.querySelectorAll('input[name="tur"]').forEach(function (r) { r.addEventListener('change', alanlar); });
+    alanlar();
+    var sayi = function (ad, ust) {
+      var v = pe[ad].value.trim();
+      if (v === '') return null;
+      var n = Number(v);
+      return (isFinite(n) && n >= 0 && n <= ust && Math.floor(n) === n) ? n : null;
+    };
+    var yaz = function (n) { return String(n).replace('.', ','); };
+    var el = function (etiket, metin, sinif) { var e = document.createElement(etiket); e.textContent = metin; if (sinif) e.className = sinif; return e; };
+    pf.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var t = tur();
+      ps.textContent = '';
+      ps.className = 'sonuc';
+      var eksik = function () {
+        ps.classList.add('kaldi');
+        ps.appendChild(el('p', 'Lütfen görünen bütün alanlara, belirtilen aralıkta tam sayı yazın.'));
+        ps.hidden = false;
+      };
+      var gecti, satir = [], neden = [], ek = '';
+      if (t === 'silahsiz') {
+        var p = sayi('temel', 100);
+        if (p === null) return eksik();
+        gecti = p >= 60;
+        satir.push('Puanınız: ' + p + ' (baraj 60).');
+        if (!gecti) neden.push('60 puan için ' + (60 - p) + ' doğru daha gerekiyordu.');
+      } else {
+        var temel = sayi(t === 'silahli' ? 'temel' : 'onceki', 100);
+        var sd = sayi('silah', 25), at = sayi('atis', 5);
+        if (temel === null || sd === null || at === null) return eksik();
+        var sp = sd * 2 + at * 10;
+        var ort = (temel + sp) / 2;
+        satir.push((t === 'silahli' ? 'Temel puan: ' : 'Önceki temel puan: ') + temel + '.');
+        satir.push('Silah puanı: ' + sp + ' (yazılı ' + (sd * 2) + ' + atış ' + (at * 10) + ').');
+        satir.push('Ortalama: ' + yaz(ort) + '.');
+        if (t === 'silahli' && temel < 50) neden.push('Temel puan 50\'nin altında.');
+        if (sp < 50) neden.push('Silah puanı 50\'nin altında.');
+        if (ort < 60) neden.push('Ortalama 60\'ın altında.');
+        gecti = neden.length === 0;
+        if (!gecti && t === 'silahli' && temel >= 60) ek = 'Temel puanınız 60 ve üzeri olduğu için silahsız sertifika alma hakkınız olabilir; şubenize danışın.';
+        if (!gecti && t === 'fark') ek = 'Mevcut silahsız kimlik kartınız bundan etkilenmez; sınav ücretini yatırıp silah sınavına yeniden girebilirsiniz.';
+      }
+      if (!gecti) ps.classList.add('kaldi');
+      ps.appendChild(el('b', gecti ? 'Bu sonuçla sınavı geçiyorsunuz.' : 'Bu sonuçla sınavı geçemiyorsunuz.', 'baslik'));
+      satir.forEach(function (s) { ps.appendChild(el('p', s)); });
+      if (neden.length) { var ul = document.createElement('ul'); neden.forEach(function (n) { ul.appendChild(el('li', n)); }); ps.appendChild(ul); }
+      if (ek) ps.appendChild(el('p', ek));
+      ps.appendChild(el('p', 'Bu hesap kendi beyanınıza dayanır; kesin sonuç Emniyet Genel Müdürlüğü\'nün açıkladığı sonuçtur.', 'dipnot'));
+      ps.hidden = false;
+    });
+  }
 })();
