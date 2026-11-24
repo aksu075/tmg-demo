@@ -576,3 +576,17 @@ html[data-sube="izmit"] .ara-cift a[data-s="gebze"], html[data-sube="gebze"] .ar
 
 /* Koruma sayfası başka bir şirketin telefonunu verir: kurs arama çubuğu burada gösterilmez */
 body:has(.koruma) .mbar { display: none; }
+
+/* ---------- Hizalama: tek iskelet ----------
+   Her sayfada içerik aynı sol kenardan başlar. Kutular (kart, tablo, not) bulunduğu sütunun tamamını kaplar;
+   yalnızca düz metin satır uzunluğu sınırlanır. Dar içerikli sayfalar "ana sütun + yan kart" düzenini kullanır. */
+.wrap.prose { max-width: 1160px; }
+.wrap.prose > * { max-width: 46em; }
+.tbl-wrap, .note, .bekle { max-width: none; }
+.note > p { max-width: 62em; }
+.split > :first-child { min-width: 0; }
+.side .dipnot { margin: 0 0 4px; }
+@media (min-width: 701px) {
+  .tbl tbody tr:nth-child(even) { background: #f8fafc; }
+  .tbl tbody tr.sum, .takvim tr.siradaki { background: var(--accent-soft); }
+}
