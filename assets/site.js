@@ -266,7 +266,7 @@
       satir.forEach(function (s) { ps.appendChild(el('p', s)); });
       if (neden.length) { var ul = document.createElement('ul'); neden.forEach(function (n) { ul.appendChild(el('li', n)); }); ps.appendChild(ul); }
       if (ek) ps.appendChild(el('p', ek));
-      ps.appendChild(el('p', 'Bu hesap kendi beyanınıza dayanır; kesin sonuç Emniyet Genel Müdürlüğü\'nün açıkladığı sonuçtur.', 'dipnot'));
+      ps.appendChild(el('p', 'Bu hesap sizin yazdığınız sayılara göre yapılır; kesin sonuç Emniyet Genel Müdürlüğü\'nün açıkladığı sonuçtur.', 'dipnot'));
       ps.hidden = false;
     });
   }

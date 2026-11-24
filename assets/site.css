@@ -573,3 +573,6 @@ html[data-sube="izmit"] .ara-cift a[data-s="gebze"], html[data-sube="gebze"] .ar
   .nav-tels { gap: 16px; padding-left: 10px; }
   .nav-tels a { font-size: .9rem; }
 }
+
+/* Koruma sayfası başka bir şirketin telefonunu verir: kurs arama çubuğu burada gösterilmez */
+body:has(.koruma) .mbar { display: none; }
