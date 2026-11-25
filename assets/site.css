@@ -411,10 +411,6 @@ table.tbl { width: 100%; border-collapse: collapse; }
   .mbar .wa { background: #15803d; }
   .mbar .gec { flex: 0 0 72px; background: var(--navy-2); font-weight: 600; font-size: .8rem; line-height: 1.25; padding-left: 6px; padding-right: 6px; }
   .mbar [data-yalniz] { display: none; }
-  html[data-sube="gebze"] .mbar a { font-size: .9rem; gap: 6px; white-space: nowrap; }
-  html[data-sube="gebze"] .mbar .gec { font-size: .8rem; }
-  html[data-sube="izmit"] .mbar .call[data-s="gebze"], html[data-sube="gebze"] .mbar .call[data-s="izmit"] { display: none; }
-  html[data-sube="izmit"] .mbar [data-yalniz][data-s="izmit"], html[data-sube="gebze"] .mbar [data-yalniz][data-s="gebze"] { display: flex; }
 }
 
 /* ---------- Telefon ---------- */
@@ -496,7 +492,6 @@ table.tbl { width: 100%; border-collapse: collapse; }
 .hero-ara { margin-top: 24px; }
 .hero-saat { margin: 12px 0 0; color: var(--on-dark); font-size: .95rem; }
 /* Şube seçiliyken öbür şubenin düğmesi ikinci planda kalır */
-html[data-sube="izmit"] .ara-cift a[data-s="gebze"], html[data-sube="gebze"] .ara-cift a[data-s="izmit"] { background: transparent; border-color: currentColor; color: inherit; }
 /* Koyu zeminde odak halkası beyaz */
 .demo-flag :focus-visible, .hdr :focus-visible, .navbar :focus-visible, .hero :focus-visible, .page-hero :focus-visible, .sec.dark :focus-visible, .ftr :focus-visible, .mbar :focus-visible { outline-color: #fff; }
 .ftr a[href^="tel"] { font-weight: 700; color: #fff; }
@@ -575,7 +570,6 @@ html[data-sube="izmit"] .ara-cift a[data-s="gebze"], html[data-sube="gebze"] .ar
 }
 
 /* Koruma sayfası başka bir şirketin telefonunu verir: kurs arama çubuğu burada gösterilmez */
-body:has(.koruma) .mbar { display: none; }
 
 /* ---------- Hizalama: tek iskelet ----------
    Her sayfada içerik aynı sol kenardan başlar. Kutular (kart, tablo, not) bulunduğu sütunun tamamını kaplar;
